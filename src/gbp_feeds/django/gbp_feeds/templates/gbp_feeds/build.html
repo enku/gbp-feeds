@@ -1,0 +1,20 @@
+<h3>{{ build.machine }} {{ build.build_id }}</h3>
+
+<table class="table">
+  <tr><th>Build</th><td>{{ build.machine }} {{ build.build_id }}</td></tr>
+  <tr><th scope="row">Build Date</th><td>{{ build.built }}</td><tr>
+  <tr><th scope="row">Submitted</th><td>{{ build.submitted }}</td><tr>
+  <tr><th scope="row">Completed</th><td>{{ build.completed }}</td><tr>
+      <tr><th scope="row">Published</th><td>{% if build.published %}yes{% else %}no{% endif %}</td><tr>
+      <tr><th scope="row">Keep</th><td>{% if build.keep %}yes{% else %}no{% endif %}</td><tr>
+  <tr><th scope="row">Tags</th><td>{{ build.tags|join:" " }}</td><tr>
+  <tr>
+    <th scope="row">Packages Built</th>
+    <td>
+      <ul>
+        {% for package in packages_built %}
+        <li>{{ package.cpv }}</li>
+        {% endfor %}
+      </ul>
+  <tr>
+</table>
