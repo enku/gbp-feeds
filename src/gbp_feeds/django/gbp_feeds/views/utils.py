@@ -83,7 +83,7 @@ def get_completed_builds(machine: str | None) -> list[BuildRecord]:
     builds = [build for build in builds if build.completed is not None]
     builds.sort(key=lambda b: cast(dt.datetime, b.completed), reverse=True)
 
-    return builds[:settings.ENTRIES_PER_FEED]
+    return builds[: settings.ENTRIES_PER_FEED]
 
 
 def get_feed_type(request: HttpRequest) -> FeedType:
