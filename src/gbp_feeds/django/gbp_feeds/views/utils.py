@@ -95,7 +95,7 @@ def get_feed_type(request: HttpRequest) -> FeedType:
     if path.endswith(".atom"):
         return FeedType.ATOM
 
-    raise ValueError(path)
+    raise ValueError(path)  # pragma: no cover
 
 
 def build_link(build: BuildRecord, request: HttpRequest) -> str:
