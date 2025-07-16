@@ -15,4 +15,5 @@ plugin = {
     "app": "gbp_feeds.django.gbp_feeds",
     "graphql": None,
     "urls": "gbp_feeds.django.gbp_feeds.views",
+    "priority": -10,
 }
