@@ -33,11 +33,10 @@
   <tr>
     <th scope="row" style="text-align: left; vertical-align: top;">Packages Built</th>
     <td>
-      <ul>
-        {% for package in packages_built %}
-        <li>{{ package.cpv }}</li>
-        {% endfor %}
-      </ul>
+      {% for package in packages_built %}
+      {{ package.cpv }}<br />
+      {% endfor %}
+    </td>
   </tr>
   </tbody>
 </table>
