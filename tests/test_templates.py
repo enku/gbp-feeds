@@ -28,3 +28,11 @@ class ExtraHeaderTests(TestCase):
         self.assertIn(
             'href="http://testserver/machines/babette/feed.rss', response.text
         )
+
+    def test_about_page(self, fixtures: Fixtures) -> None:
+        client = fixtures.client
+
+        response = client.get("/about/")
+
+        self.assertIn('href="http://testserver/feed.atom"', response.text)
+        self.assertIn('href="http://testserver/feed.rss"', response.text)
