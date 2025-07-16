@@ -6,10 +6,10 @@ from gentoo_build_publisher.django.gentoo_build_publisher.views.utils import vie
 from . import utils
 
 
-@view("feed.rss")
-@view("feed.atom")
-@view("machines/<str:machine>/feed.rss")
-@view("machines/<str:machine>/feed.atom")
+@view("feed.rss", name="gbp-feeds-rss-main")
+@view("feed.atom", name="gbp-feeds-atom-main")
+@view("machines/<str:machine>/feed.rss", name="gbp-feeds-rss-machine")
+@view("machines/<str:machine>/feed.atom", name="gbp-feeds-atom-machine")
 def _(request: HttpRequest, *, machine: str | None = None) -> HttpResponse:
     """View to return the feed for the given machine, if applicable"""
     feed_type = utils.get_feed_type(request)
