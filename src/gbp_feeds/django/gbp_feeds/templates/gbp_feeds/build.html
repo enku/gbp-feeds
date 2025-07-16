@@ -20,3 +20,13 @@
   <tr>
   </tbody>
 </table>
+{% if build.note %}
+<table class="table">
+  <thead>
+    <tr><th scope="col">Notes</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>{{ build.note }}</td></tr>
+  </tbody>
+</table>
+{% endif %}

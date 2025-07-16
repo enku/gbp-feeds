@@ -56,6 +56,22 @@ class BuildFeedTests(TestCase):
         self.assertEqual(item["author_name"], "Gentoo Build Publisher")
         self.assertEqual(item["pubdate"], builds[0].completed)
 
+    def test_item_note(self, fixtures: Fixtures) -> None:
+        publisher = fixtures.publisher
+        builds = publisher.repo.build_records.for_machine("babette")
+        request = fixtures.request
+        build = builds[0]
+        build = builds[0] = publisher.repo.build_records.save(
+            build, note="This is a note."
+        )
+
+        feed = utils.build_feed(builds, utils.FeedType.ATOM, request)
+        item = feed.items[0]
+
+        self.assertTrue(
+            "This is a note." in item["content"], "Build note not found in feed content"
+        )
+
 
 @given(lib.request, lib.pulled_builds)
 @where(pulled_builds__machines=["babette"], pulled_builds__num_builds=1)

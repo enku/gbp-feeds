@@ -75,7 +75,7 @@ class FeedTests(TestCase):
         expected = render_to_string(
             "gbp_feeds/build.html", {"build": build, "packages_built": packages_built}
         )
-        self.assertEqual(expected, content.value + "\n")
+        self.assertEqual(expected.strip(), content.value.strip())
 
     def test_feed_content_machine(self, fixtures: Fixtures) -> None:
         url = "/feed.atom"
@@ -102,7 +102,7 @@ class FeedTests(TestCase):
         expected = render_to_string(
             "gbp_feeds/build.html", {"build": build, "packages_built": packages_built}
         )
-        self.assertEqual(expected, content.value + "\n")
+        self.assertEqual(expected.strip(), content.value.strip())
 
 
 def get_build(publisher: BuildPublisher, build_id: str) -> BuildRecord:
