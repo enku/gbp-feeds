@@ -5,6 +5,7 @@
 import random
 from typing import Iterable
 
+from django.http import HttpRequest
 from faker import Faker
 from faker.providers import BaseProvider
 from gbp_testkit import fixtures as testkit
@@ -46,3 +47,18 @@ def pulled_builds(
             publisher.pull(build)
 
     return publisher.repo.build_records.list_machines()
+
+
+@fixture()
+def request(
+    _: Fixtures,
+    path: str = "/feed.atom",
+    server_name: str = "testserver",
+    server_port: int = 80,
+) -> HttpRequest:
+    request = HttpRequest()
+    request.path = path
+    request.META["SERVER_NAME"] = server_name
+    request.META["SERVER_PORT"] = server_port
+
+    return request
