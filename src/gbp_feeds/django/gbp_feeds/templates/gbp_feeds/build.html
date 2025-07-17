@@ -31,8 +31,8 @@
     <td>{{ build.tags|join:" " }}</td>
   </tr>
   <tr>
-    <th scope="row" style="text-align: left; vertical-align: top;">Packages Built&nbsp;&nbsp;</th>
-    <td>
+    <th scope="row" style="text-align: left; vertical-align: top;">Packages Built</th>
+    <td style="margin-left: 1em;">
       {% for package in packages_built %}
       {{ package.cpv }}<br />
       {% endfor %}
