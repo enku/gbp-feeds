@@ -65,7 +65,7 @@ class FeedTests(TestCase):
         entry = d.entries[0]
         self.assertEqual("GBP build: babette 2", entry.title)
         self.assertEqual("Build babette.2 has been pulled", entry.description)
-        self.assertEqual("http://testserver/machines/babette/", entry.link)
+        self.assertEqual("http://testserver/machines/babette/builds/2/", entry.link)
 
         content = entry.content[0]
         self.assertEqual("text/html", content.type)
@@ -92,7 +92,7 @@ class FeedTests(TestCase):
         entry = d.entries[0]
         self.assertEqual("GBP build: polaris 3", entry.title)
         self.assertEqual("Build polaris.3 has been pulled", entry.description)
-        self.assertEqual("http://testserver/machines/polaris/", entry.link)
+        self.assertEqual("http://testserver/machines/polaris/builds/3/", entry.link)
 
         content = entry.content[0]
         self.assertEqual("text/html", content.type)

@@ -103,6 +103,8 @@ def build_link(build: BuildRecord, request: HttpRequest) -> str:
 
     For now this is the machine page of the build's machine.
     """
-    location = reverse("gbp-machines", kwargs={"machine": build.machine})
+    location = reverse(
+        "gbp-builds", kwargs={"machine": build.machine, "build_id": build.build_id}
+    )
 
     return request.build_absolute_uri(location)

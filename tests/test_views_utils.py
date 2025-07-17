@@ -50,7 +50,7 @@ class BuildFeedTests(TestCase):
         item = feed.items[0]
 
         self.assertEqual(item["title"], "GBP build: babette 2")
-        self.assertEqual(item["link"], "http://testserver/machines/babette/")
+        self.assertEqual(item["link"], "http://testserver/machines/babette/builds/2/")
         self.assertEqual(item["description"], "Build babette.2 has been pulled")
         self.assertEqual(item["unique_id"], "babette.2")
         self.assertEqual(item["author_name"], "Gentoo Build Publisher")
@@ -158,4 +158,4 @@ class BuildLinkTests(TestCase):
 
         url = utils.build_link(build, request)
 
-        self.assertEqual("http://testserver/machines/babette/", url)
+        self.assertEqual("http://testserver/machines/babette/builds/0/", url)
