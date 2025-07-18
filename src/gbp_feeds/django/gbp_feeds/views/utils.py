@@ -59,7 +59,11 @@ def get_item_content(build: BuildRecord, request: HttpRequest) -> str:
     The request argument will be used to generate URLs.
     """
     packages_built = publisher.storage.get_metadata(build).packages.built
-    context = {"build": build, "packages_built": packages_built}
+    context = {
+        "build": build,
+        "packages_built": packages_built,
+        "published": publisher.published(build),
+    }
     rendered = render_to_string("gbp_feeds/build.html", context)
 
     return rendered

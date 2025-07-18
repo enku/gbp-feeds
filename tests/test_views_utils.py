@@ -72,6 +72,22 @@ class BuildFeedTests(TestCase):
             "This is a note." in item["content"], "Build note not found in feed content"
         )
 
+    def test_item_published(self, fixtures: Fixtures) -> None:
+        publisher = fixtures.publisher
+        builds = publisher.repo.build_records.for_machine("babette")
+        build = builds[0]
+        publisher.publish(build)
+        build = builds[0] = publisher.repo.build_records.get(build)
+
+        feed = utils.build_feed(builds, utils.FeedType.ATOM, fixtures.request)
+        item = feed.items[0]
+
+        self.assertRegex(
+            item["content"],
+            r">Published</th>\W*<td>yes</td>",
+            "Build not shown as published",
+        )
+
 
 @given(lib.request, lib.pulled_builds)
 @where(pulled_builds__machines=["babette"], pulled_builds__num_builds=1)
