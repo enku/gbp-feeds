@@ -4,6 +4,8 @@ import datetime as dt
 from typing import Any, Iterable
 
 class SyndicationFeed:
+    feed: dict[str, Any]
+    items: list[dict[str, Any]]
     def __init__(
         self,
         title: str,
@@ -42,6 +44,7 @@ class SyndicationFeed:
         **kwargs: Any,
     ) -> None: ...
     def writeString(self, encoding: str) -> str: ...
+    def num_items(self) -> int: ...
 
 class Atom1Feed(SyndicationFeed): ...
 class Rss201rev2Feed(SyndicationFeed): ...
