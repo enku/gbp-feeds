@@ -20,11 +20,11 @@
   </tr>
   <tr>
     <th scope="row" style="text-align: left;">Published</th>
-    <td>{% if published %}yes{% else %}no{% endif %}</td>
+    <td>{{ published|yesno }}</td>
   </tr>
   <tr>
     <th scope="row" style="text-align: left;">Keep</th>
-    <td>{% if build.keep %}yes{% else %}no{% endif %}</td>
+    <td>{{ build.keep|yesno }}</td>
   </tr>
   <tr>
     <th scope="row" style="text-align: left;">Tags</th>
