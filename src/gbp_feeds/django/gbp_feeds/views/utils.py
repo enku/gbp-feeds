@@ -5,7 +5,6 @@ import enum
 from typing import Any, Iterable, cast
 
 import feedgenerator as fg
-from django.http import HttpRequest
 from django.template.loader import render_to_string
 from django.urls import reverse
 from gentoo_build_publisher import publisher
@@ -86,16 +85,14 @@ def get_completed_builds(machine: str | None) -> list[BuildRecord]:
     return builds[: settings.ENTRIES_PER_FEED]
 
 
-def get_feed_type(request: HttpRequest) -> FeedType:
+def get_feed_type(url_path: str) -> FeedType:
     """Return the FeedType given the request"""
-    path = request.path
-
-    if path.endswith(".rss"):
+    if url_path.endswith(".rss"):
         return FeedType.RSS
-    if path.endswith(".atom"):
+    if url_path.endswith(".atom"):
         return FeedType.ATOM
 
-    raise ValueError(path)
+    raise ValueError(url_path)
 
 
 def build_link(build: BuildRecord, feed: fg.SyndicationFeed) -> str:

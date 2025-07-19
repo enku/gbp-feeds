@@ -17,7 +17,7 @@ from . import utils
 def _(request: HttpRequest, *, machine: str | None = None) -> HttpResponse:
     """View to return the feed for the given machine, if applicable"""
     settings = Settings.from_environ()
-    feed_type = utils.get_feed_type(request)
+    feed_type = utils.get_feed_type(request.path)
     feed_url = request.build_absolute_uri(reverse("dashboard"))
     stylesheets = [
         settings.EXT_CSS,

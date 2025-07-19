@@ -171,30 +171,26 @@ class GetCompletedBuilds(TestCase):
         self.assertNotIn(build, builds)
 
 
-@given(lib.request)
 class GetFeedTypeTests(TestCase):
-    def test_atom(self, fixtures: Fixtures) -> None:
-        request = fixtures.request
-        request.path = "/feed.atom"
+    def test_atom(self) -> None:
+        path = "/feed.atom"
 
-        feed_type = utils.get_feed_type(request)
+        feed_type = utils.get_feed_type(path)
 
         self.assertEqual(utils.FeedType.ATOM, feed_type)
 
-    def test_rss(self, fixtures: Fixtures) -> None:
-        request = fixtures.request
-        request.path = "/feed.rss"
+    def test_rss(self) -> None:
+        path = "/feed.rss"
 
-        feed_type = utils.get_feed_type(request)
+        feed_type = utils.get_feed_type(path)
 
         self.assertEqual(utils.FeedType.RSS, feed_type)
 
-    def test_other(self, fixtures: Fixtures) -> None:
-        request = fixtures.request
-        request.path = "/index.html"
+    def test_other(self) -> None:
+        path = "/index.html"
 
         with self.assertRaises(ValueError):
-            utils.get_feed_type(request)
+            utils.get_feed_type(path)
 
 
 @given(lib.pulled_builds)
