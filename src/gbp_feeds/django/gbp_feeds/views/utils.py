@@ -2,15 +2,15 @@
 
 import datetime as dt
 import enum
-from typing import Iterable, cast
+from typing import Any, Iterable, cast
 
 import feedgenerator as fg
-from django.contrib.staticfiles.storage import staticfiles_storage
 from django.http import HttpRequest
 from django.template.loader import render_to_string
 from django.urls import reverse
 from gentoo_build_publisher import publisher
 from gentoo_build_publisher.records import BuildRecord
+from yarl import URL
 
 from gbp_feeds.settings import Settings
 
@@ -22,35 +22,34 @@ class FeedType(enum.StrEnum):
     RSS = "application/rss+xml"
 
 
-def build_feed(
-    builds: Iterable[BuildRecord], feed_type: FeedType, request: HttpRequest
-) -> fg.SyndicationFeed:
+def build_feed(feed: fg.SyndicationFeed, builds: Iterable[BuildRecord]) -> None:
     """Return a populated Feed given the builds and feed_type"""
-    settings = Settings.from_environ()
-    link = request.build_absolute_uri(reverse("dashboard"))
-    Feed = fg.Rss201rev2Feed if feed_type == FeedType.RSS else fg.Atom1Feed
-
-    feed = Feed(
-        title=settings.TITLE,
-        link=link,
-        description=settings.DESCRIPTION,
-        language="en",
-        stylesheets=[
-            settings.EXT_CSS,
-            request.build_absolute_uri(staticfiles_storage.url("gbp/gbp.css")),
-        ],
-    )
     for build in builds:
         feed.add_item(
             title=f"GBP build: {build.machine} {build.build_id}",
-            link=build_link(build, request),
+            link=build_link(build, feed),
             description=f"Build {build} has been pulled",
             unique_id=str(build),
             content=get_item_content(build),
             author_name="Gentoo Build Publisher",
             pubdate=build.completed,
         )
-    return feed
+
+
+def make_feed(feed_type: FeedType, url: str, **extra: Any) -> fg.SyndicationFeed:
+    """Create and return an (empty) SyndicationFeed
+
+    The type of feed depends on feed_type.
+    """
+    settings = Settings.from_environ()
+
+    return (fg.Rss201rev2Feed if feed_type == FeedType.RSS else fg.Atom1Feed)(
+        title=settings.TITLE,
+        link=url,
+        description=settings.DESCRIPTION,
+        language="en",
+        **extra,
+    )
 
 
 def get_item_content(build: BuildRecord) -> str:
@@ -99,7 +98,7 @@ def get_feed_type(request: HttpRequest) -> FeedType:
     raise ValueError(path)
 
 
-def build_link(build: BuildRecord, request: HttpRequest) -> str:
+def build_link(build: BuildRecord, feed: fg.SyndicationFeed) -> str:
     """Given the BuildRecord and request, return the url of the build
 
     For now this is the machine page of the build's machine.
@@ -107,5 +106,4 @@ def build_link(build: BuildRecord, request: HttpRequest) -> str:
     location = reverse(
         "gbp-builds", kwargs={"machine": build.machine, "build_id": build.build_id}
     )
-
-    return request.build_absolute_uri(location)
+    return str(URL(feed.feed["link"]) / location.removeprefix("/"))
