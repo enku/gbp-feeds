@@ -46,18 +46,15 @@ def build_feed(
             link=build_link(build, request),
             description=f"Build {build} has been pulled",
             unique_id=str(build),
-            content=get_item_content(build, request),
+            content=get_item_content(build),
             author_name="Gentoo Build Publisher",
             pubdate=build.completed,
         )
     return feed
 
 
-def get_item_content(build: BuildRecord, request: HttpRequest) -> str:
-    """Return the feed item content for the given build.
-
-    The request argument will be used to generate URLs.
-    """
+def get_item_content(build: BuildRecord) -> str:
+    """Return the feed item content for the given build"""
     packages_built = publisher.storage.get_metadata(build).packages.built
     context = {
         "build": build,

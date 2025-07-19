@@ -89,14 +89,13 @@ class BuildFeedTests(TestCase):
         )
 
 
-@given(lib.request, lib.pulled_builds)
+@given(lib.pulled_builds)
 @where(pulled_builds__machines=["babette"], pulled_builds__num_builds=1)
 class GetItemContentTests(TestCase):
     def test(self, fixtures: Fixtures) -> None:
         build = fixtures.publisher.repo.build_records.for_machine("babette")[0]
-        request = fixtures.request
 
-        content = utils.get_item_content(build, request)
+        content = utils.get_item_content(build)
 
         self.assertTrue(content.startswith("<h3>babette 0</h3>"))
 
