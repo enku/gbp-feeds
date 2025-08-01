@@ -1,11 +1,12 @@
 """tests library"""
 
-# pylint: disable=missing-docstring
+# pylint: disable=missing-docstring,redefined-outer-name
 
 import random
-from typing import Iterable
+from typing import Any, Iterable, Mapping
 
 from django.http import HttpRequest
+from django.template.context import Context
 from faker import Faker
 from faker.providers import BaseProvider
 from gbp_testkit import fixtures as testkit
@@ -62,3 +63,10 @@ def request(
     request.META["SERVER_PORT"] = server_port
 
     return request
+
+
+@fixture(request)
+def context(fixtures: Fixtures, context: Mapping[str, Any] | None = None) -> Context:
+    context = context or {}
+
+    return Context({"request": fixtures.request, **context})
