@@ -51,7 +51,7 @@ line_length = 88
 [tool.coverage.run]
 branch = true
 source = ["gbp_feeds", "tests"]
-#omit = ["src/gbp_feeds/migrations/*"]
+omit = ["tests/__main__.py"]
 
 [tool.pdm]
 distribution = true
