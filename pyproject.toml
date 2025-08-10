@@ -13,6 +13,10 @@ license = {text = "GPL3+"}
 [project.entry-points."gentoo_build_publisher.plugins"]
 gbp_feeds = "gbp_feeds:plugin"
 
+[project.urls]
+homepage = "https://github.com/enku/gbp-feeds"
+repository = "https://github.com/enku/gbp-feeds"
+
 [build-system]
 requires = ["pdm-backend"]
 build-backend = "pdm.backend"
