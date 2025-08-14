@@ -141,7 +141,9 @@ class GetCompletedBuilds(TestCase):
         self.assertEqual(6, len(builds))
 
         prev = builds[0]
+        assert prev.completed
         for build in builds[1:]:
+            assert build.completed
             self.assertGreater(prev.completed, build.completed)
             prev = build
 
