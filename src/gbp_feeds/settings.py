@@ -22,4 +22,6 @@ class Settings(BaseSettings):
     # Entries per feed
     ENTRIES_PER_FEED: int = 20
 
-    EXT_CSS: str = "//cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+    EXT_CSS: str = (
+        "https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+    )
