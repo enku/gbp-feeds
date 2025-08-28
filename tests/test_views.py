@@ -7,48 +7,33 @@ from django.template.loader import render_to_string
 from gentoo_build_publisher.build_publisher import BuildPublisher
 from gentoo_build_publisher.records import BuildRecord
 from gentoo_build_publisher.types import Build
-from unittest_fixtures import Fixtures, given
+from unittest_fixtures import Fixtures, given, params
 
 from . import lib
 
 
 @given(testkit.client, lib.pulled_builds)
+@params(feed_type=["rss", "atom"])
 class FeedTests(TestCase):
-    def test_rss_feed(self, fixtures: Fixtures) -> None:
-        url = "/feed.rss?foo=bar"
+    def test(self, fixtures: Fixtures) -> None:
+        feed_type = fixtures.feed_type
+        url = f"/feed.{feed_type}?foo=bar"
         client = fixtures.client
 
         response = client.get(url)
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual("application/rss+xml", response["Content-Type"])
+        self.assertEqual(f"application/{feed_type}+xml", response["Content-Type"])
 
-    def test_atom_feed(self, fixtures: Fixtures) -> None:
-        url = "/feed.atom"
+    def test_machine_feed(self, fixtures: Fixtures) -> None:
+        feed_type = fixtures.feed_type
+        url = f"/machines/babette/feed.{feed_type}"
         client = fixtures.client
 
         response = client.get(url)
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual("application/atom+xml", response["Content-Type"])
-
-    def test_rss_machine_feed(self, fixtures: Fixtures) -> None:
-        url = "/machines/babette/feed.rss"
-        client = fixtures.client
-
-        response = client.get(url)
-
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual("application/rss+xml", response["Content-Type"])
-
-    def test_atom_machine_feed(self, fixtures: Fixtures) -> None:
-        url = "/machines/babette/feed.atom"
-        client = fixtures.client
-
-        response = client.get(url)
-
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual("application/atom+xml", response["Content-Type"])
+        self.assertEqual(f"application/{feed_type}+xml", response["Content-Type"])
 
     def test_feed_content(self, fixtures: Fixtures) -> None:
         url = "/machines/babette/feed.atom"
