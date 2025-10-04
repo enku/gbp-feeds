@@ -38,7 +38,7 @@ def pulled_builds(
 ) -> list[str]:
     publisher: BuildPublisher = fixtures.publisher
     jenkins = publisher.jenkins
-    builder: ArtifactFactory = jenkins.artifact_builder
+    builder: ArtifactFactory = jenkins.artifact_builder  # type: ignore[attr-defined]
 
     for i, machine in enumerate(machines):
         for j in range(num_builds):
