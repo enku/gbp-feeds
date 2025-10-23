@@ -13,14 +13,14 @@ class Settings(BaseSettings):
 
     # pylint: disable=invalid-name
 
-    # Title for the Feed
     TITLE: str = "Gentoo Build Publisher"
+    """Title for the Feed"""
 
-    # Description for the Feed
     DESCRIPTION: str = "Latest Gentoo Build Publisher builds" ""
+    """Description for the Feed"""
 
-    # Entries per feed
     ENTRIES_PER_FEED: int = 20
+    """Entries per feed"""
 
     EXT_CSS: str = (
         "https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
