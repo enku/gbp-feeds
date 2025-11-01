@@ -4,6 +4,7 @@ from unittest import TestCase
 import feedparser
 import gbp_testkit.fixtures as testkit
 from django.template.loader import render_to_string
+from django.urls import reverse
 from gentoo_build_publisher.build_publisher import BuildPublisher
 from gentoo_build_publisher.records import BuildRecord
 from gentoo_build_publisher.types import Build
@@ -90,7 +91,7 @@ class FeedTests(TestCase):
         self.assertEqual(expected.strip(), content.value.strip())
 
 
-@given(testkit.client, lib.pulled_builds)
+@given(testkit.client)
 class FeedLinkTests(TestCase):
     def test(self, fixtures: Fixtures) -> None:
         client = fixtures.client
@@ -103,6 +104,23 @@ class FeedLinkTests(TestCase):
 </div>
 """
         self.assertIn(expected, response.text)
+
+
+@given(testkit.client, lib.pulled_builds)
+class MachineDetailsFeedLinkTests(TestCase):
+    def test(self, fixtures: Fixtures) -> None:
+        pulled_builds = fixtures.pulled_builds
+        machine = pulled_builds[0]
+        client = fixtures.client
+        machine_page = client.get(f"/machines/{machine}/").text
+        machine_feed = reverse("gbp-feeds-atom-machine", kwargs={"machine": machine})
+
+        expected = f"""\
+<li class="list-group-item d-flex justify-content-between align-items-center">
+  Feed <span><a href="{machine_feed}"><span><i class="bi bi-rss"></i></span></a></span>
+</li>
+"""
+        self.assertIn(expected, machine_page)
 
 
 def get_build(publisher: BuildPublisher, build_id: str) -> BuildRecord:
