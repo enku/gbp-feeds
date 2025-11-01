@@ -90,6 +90,21 @@ class FeedTests(TestCase):
         self.assertEqual(expected.strip(), content.value.strip())
 
 
+@given(testkit.client, lib.pulled_builds)
+class FeedLinkTests(TestCase):
+    def test(self, fixtures: Fixtures) -> None:
+        client = fixtures.client
+
+        response = client.get("/")
+
+        expected = """\
+<div class="col text-center">
+  <a href="/feed.atom">Feed <i class="bi bi-rss-fill"></i></a>
+</div>
+"""
+        self.assertIn(expected, response.text)
+
+
 def get_build(publisher: BuildPublisher, build_id: str) -> BuildRecord:
     records = publisher.repo.build_records
     build = Build.from_id(build_id)
