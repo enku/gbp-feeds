@@ -100,7 +100,7 @@ class FeedLinkTests(TestCase):
 
         expected = """\
 <div class="col text-center">
-  <a href="/feed.atom">Feed <i class="bi bi-rss-fill"></i></a>
+  <a href="/feed.rss">Feed <i class="bi bi-rss-fill"></i></a>
 </div>
 """
         self.assertIn(expected, response.text)
@@ -113,7 +113,7 @@ class MachineDetailsFeedLinkTests(TestCase):
         machine = pulled_builds[0]
         client = fixtures.client
         machine_page = client.get(f"/machines/{machine}/").text
-        machine_feed = reverse("gbp-feeds-atom-machine", kwargs={"machine": machine})
+        machine_feed = reverse("gbp-feeds-rss-machine", kwargs={"machine": machine})
 
         expected = f"""\
 <li class="list-group-item d-flex justify-content-between align-items-center">

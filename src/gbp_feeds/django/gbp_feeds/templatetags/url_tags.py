@@ -22,6 +22,6 @@ def full_url(context: Context, name: str, **kwargs: Any) -> str:
 @register.filter
 def machine_feed_link(machine: str) -> str:
     """Render the machine-specific (atom) feed link tag"""
-    url = reverse("gbp-feeds-atom-machine", kwargs={"machine": machine})
+    url = reverse("gbp-feeds-rss-machine", kwargs={"machine": machine})
 
     return mark_safe(f'<a href="{url}"><span><i class="bi bi-rss"></i></span></a>')

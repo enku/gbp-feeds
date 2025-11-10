@@ -14,7 +14,7 @@
 {% endblock %}
 
 {% block footerlinks %}
-  {% url 'gbp-feeds-atom-main' as link %}
+  {% url 'gbp-feeds-rss-main' as link %}
   {% footer_link 'Feed <i class="bi bi-rss-fill"></i>' link %}
   {{ block.super }}
 {% endblock %}
