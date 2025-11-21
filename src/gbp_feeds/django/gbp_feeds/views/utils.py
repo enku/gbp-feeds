@@ -21,8 +21,12 @@ class FeedType(enum.StrEnum):
     RSS = "application/rss+xml"
 
 
-def build_feed(feed: fg.SyndicationFeed, builds: Iterable[BuildRecord]) -> None:
+def build_feed(
+    feed_type: FeedType, url: str, stylesheets: list[str], builds: Iterable[BuildRecord]
+) -> fg.SyndicationFeed:
     """Return a populated Feed given the builds and feed_type"""
+    feed = create_feed(feed_type, url, stylesheets=stylesheets)
+
     for build in builds:
         feed.add_item(
             title=f"GBP build: {build.machine} {build.build_id}",
@@ -33,9 +37,10 @@ def build_feed(feed: fg.SyndicationFeed, builds: Iterable[BuildRecord]) -> None:
             author_name="Gentoo Build Publisher",
             pubdate=build.completed,
         )
+    return feed
 
 
-def make_feed(feed_type: FeedType, url: str, **extra: Any) -> fg.SyndicationFeed:
+def create_feed(feed_type: FeedType, url: str, **extra: Any) -> fg.SyndicationFeed:
     """Create and return an (empty) SyndicationFeed
 
     The type of feed depends on feed_type.

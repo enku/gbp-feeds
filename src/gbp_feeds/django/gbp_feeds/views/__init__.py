@@ -23,9 +23,8 @@ def _(request: HttpRequest, *, machine: str | None = None) -> HttpResponse:
         settings.EXT_CSS,
         request.build_absolute_uri(staticfiles_storage.url("gbp/gbp.css")),
     ]
-    feed = utils.make_feed(feed_type, feed_url, stylesheets=stylesheets)
     builds = utils.get_completed_builds(machine)
-    utils.build_feed(feed, builds)
+    feed = utils.build_feed(feed_type, feed_url, stylesheets, builds)
 
     response = HttpResponse(feed.writeString("utf-8"), content_type=str(feed_type))
 

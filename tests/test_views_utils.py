@@ -14,9 +14,9 @@ from . import lib
 
 @params(feed_type=[utils.FeedType.ATOM, utils.FeedType.RSS])
 @params(feed_cls=[fg.Atom1Feed, fg.Rss201rev2Feed])
-class MakeFeedTests(TestCase):
+class CreateFeedTests(TestCase):
     def test(self, fixtures: Fixtures) -> None:
-        feed = utils.make_feed(fixtures.feed_type, "http://gbp.invalid/")
+        feed = utils.create_feed(fixtures.feed_type, "http://gbp.invalid/")
 
         self.assertIsInstance(feed, fixtures.feed_cls)
         self.assertEqual(feed.feed["title"], "Gentoo Build Publisher")
@@ -29,7 +29,7 @@ class MakeFeedTests(TestCase):
     def test_stylesheets(self, fixtures: Fixtures) -> None:
         stylesheets = ["http://test.invalid/foo.css", "http://test.invalid/bar.css"]
 
-        feed = utils.make_feed(
+        feed = utils.create_feed(
             fixtures.feed_type, "http://gbp.invalid/", stylesheets=stylesheets
         )
 
@@ -41,26 +41,24 @@ class MakeFeedTests(TestCase):
 class BuildFeedTests(TestCase):
     def test(self, fixtures: Fixtures) -> None:
         builds = fixtures.publisher.repo.build_records.for_machine("babette")
-        feed = utils.make_feed(fixtures.feed_type, "http://testserver/")
 
-        utils.build_feed(feed, builds)
+        feed = utils.build_feed(utils.FeedType.RSS, "http://gbp.invalid/", [], builds)
 
         self.assertEqual(3, feed.num_items())
         self.assertEqual("Gentoo Build Publisher", feed.feed["title"])
-        self.assertEqual("http://testserver/", feed.feed["link"])
+        self.assertEqual("http://gbp.invalid/", feed.feed["link"])
         self.assertEqual(
             "Latest Gentoo Build Publisher builds", feed.feed["description"]
         )
 
     def test_item(self, fixtures: Fixtures) -> None:
         builds = fixtures.publisher.repo.build_records.for_machine("babette")
-        feed = utils.make_feed(fixtures.feed_type, "http://testserver/")
 
-        utils.build_feed(feed, builds)
+        feed = utils.build_feed(utils.FeedType.RSS, "http://gbp.invalid/", [], builds)
         item = feed.items[0]
 
         self.assertEqual(item["title"], "GBP build: babette 2")
-        self.assertEqual(item["link"], "http://testserver/machines/babette/builds/2/")
+        self.assertEqual(item["link"], "http://gbp.invalid/machines/babette/builds/2/")
         self.assertEqual(item["description"], "Build babette.2 has been pulled")
         self.assertEqual(item["unique_id"], "babette.2")
         self.assertEqual(item["author_name"], "Gentoo Build Publisher")
@@ -69,13 +67,14 @@ class BuildFeedTests(TestCase):
     def test_item_note(self, fixtures: Fixtures) -> None:
         publisher = fixtures.publisher
         builds = publisher.repo.build_records.for_machine("babette")
-        feed = utils.make_feed(fixtures.feed_type, "http://testserver/")
+
+        feed = utils.build_feed(utils.FeedType.RSS, "http://gbp.invalid/", [], builds)
         build = builds[0]
         build = builds[0] = publisher.repo.build_records.save(
             build, note="This is a note."
         )
 
-        utils.build_feed(feed, builds)
+        feed = utils.build_feed(utils.FeedType.RSS, "http://gbp.invalid/", [], builds)
         item = feed.items[0]
 
         self.assertTrue(
@@ -85,12 +84,13 @@ class BuildFeedTests(TestCase):
     def test_item_published(self, fixtures: Fixtures) -> None:
         publisher = fixtures.publisher
         builds = publisher.repo.build_records.for_machine("babette")
-        feed = utils.make_feed(fixtures.feed_type, "http://testserver/")
+
+        feed = utils.build_feed(utils.FeedType.RSS, "http://gbp.invalid/", [], builds)
         build = builds[0]
         publisher.publish(build)
         build = builds[0] = publisher.repo.build_records.get(build)
 
-        utils.build_feed(feed, builds)
+        feed = utils.build_feed(utils.FeedType.RSS, "http://gbp.invalid/", [], builds)
         item = feed.items[0]
 
         self.assertRegex(
@@ -174,7 +174,7 @@ class GetFeedTypeTests(TestCase):
 class BuildLinkTests(TestCase):
     def test(self, fixtures: Fixtures) -> None:
         build = fixtures.publisher.repo.build_records.for_machine("babette")[0]
-        feed = utils.make_feed(fixtures.feed_type, "http://testserver/")
+        feed = utils.create_feed(fixtures.feed_type, "http://testserver/")
 
         url = utils.build_link(build, feed)
 
