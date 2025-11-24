@@ -4,6 +4,7 @@
 
 import random
 from typing import Any, Iterable, Mapping
+from unittest import mock
 
 from django.http import HttpRequest
 from django.template.context import Context
@@ -13,7 +14,7 @@ from gbp_testkit import fixtures as testkit
 from gbp_testkit.factories import ArtifactFactory
 from gentoo_build_publisher.build_publisher import BuildPublisher
 from gentoo_build_publisher.types import Build
-from unittest_fixtures import Fixtures, fixture
+from unittest_fixtures import FixtureContext, Fixtures, fixture
 
 fake = Faker()
 
@@ -29,7 +30,13 @@ class Provider(BaseProvider):
 fake.add_provider(Provider)
 
 
-@fixture(testkit.environ, testkit.publisher)
+@fixture()
+def mute_signals(_: Fixtures) -> FixtureContext[mock.Mock]:
+    with mock.patch("gentoo_build_publisher.signals.PyDispatcherAdapter.emit") as m:
+        yield m
+
+
+@fixture(mute_signals, testkit.environ, testkit.publisher)
 def pulled_builds(
     fixtures: Fixtures,
     machines: Iterable[str] = ("babette", "polaris"),
