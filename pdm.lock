@@ -5,7 +5,7 @@
 groups = ["default", "dev"]
 strategy = ["inherit_metadata"]
 lock_version = "4.5.0"
-content_hash = "sha256:8b498232f25e1eec30aa3acc2a5effe5e9fef0b1a861dfee042a9840a2e3589a"
+content_hash = "sha256:c8995cd50223b70b27c6e0219e7d19e7dd212d10f5f18b5dabafb684e016a282"
 
 [[metadata.targets]]
 requires_python = ">=3.13"
@@ -772,6 +772,7 @@ groups = ["dev"]
 marker = "python_version >= \"3.13\""
 dependencies = [
     "factory-boy>=3.3.3",
+    "gentoo-build-publisher @ git+https://github.com/enku/gentoo-build-publisher.git@c5ea0c0be20b7222f129036846fd1f188346a138",
     "gentoo-build-publisher @ git+https://github.com/enku/gentoo-build-publisher.git@master",
     "unittest-fixtures>=2.3.0",
 ]
