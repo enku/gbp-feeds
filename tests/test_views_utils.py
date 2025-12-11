@@ -155,17 +155,13 @@ class GetCompletedBuilds(TestCase):
 @params(ext=["atom", "rss"])
 class GetFeedTypeTests(TestCase):
     def test(self, fixtures: Fixtures) -> None:
-        path = f"/feed.{fixtures.ext}"
-
-        feed_type = utils.get_feed_type(path)
+        feed_type = utils.get_feed_type(f"/feed.{fixtures.ext}")
 
         self.assertEqual(fixtures.feed_type, feed_type)
 
     def test_other(self, fixtures: Fixtures) -> None:
-        path = "/index.html"
-
         with self.assertRaises(ValueError):
-            utils.get_feed_type(path)
+            utils.get_feed_type("/index.html")
 
 
 @given(lib.pulled_builds)
