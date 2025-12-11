@@ -5,7 +5,7 @@ Atom/RSS feeds for Gentoo Build Publisher
 
 import importlib.metadata
 
-__version__ = importlib.metadata.version("gbp-feeds")
+__version__ = importlib.metadata.version(__name__)
 
 # Plugin definition
 plugin = {
