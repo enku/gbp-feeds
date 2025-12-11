@@ -125,6 +125,5 @@ class MachineDetailsFeedLinkTests(TestCase):
 
 def get_build(publisher: BuildPublisher, build_id: str) -> BuildRecord:
     records = publisher.repo.build_records
-    build = Build.from_id(build_id)
 
-    return records.get(build)
+    return records.get(Build.from_id(build_id))
