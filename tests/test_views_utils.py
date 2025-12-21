@@ -42,7 +42,7 @@ class BuildFeedTests(TestCase):
     def test(self, fixtures: Fixtures) -> None:
         builds = fixtures.publisher.repo.build_records.for_machine("babette")
 
-        feed = utils.build_feed(utils.FeedType.RSS, "http://gbp.invalid/", [], builds)
+        feed = utils.build_feed(utils.FeedType.RSS, "http://gbp.invalid/", builds)
 
         self.assertEqual(3, feed.num_items())
         self.assertEqual("Gentoo Build Publisher", feed.feed["title"])
@@ -54,7 +54,7 @@ class BuildFeedTests(TestCase):
     def test_item(self, fixtures: Fixtures) -> None:
         builds = fixtures.publisher.repo.build_records.for_machine("babette")
 
-        feed = utils.build_feed(utils.FeedType.RSS, "http://gbp.invalid/", [], builds)
+        feed = utils.build_feed(utils.FeedType.RSS, "http://gbp.invalid/", builds)
         item = feed.items[0]
 
         self.assertEqual(item["title"], "GBP build: babette 2")
@@ -68,13 +68,13 @@ class BuildFeedTests(TestCase):
         publisher = fixtures.publisher
         builds = publisher.repo.build_records.for_machine("babette")
 
-        feed = utils.build_feed(utils.FeedType.RSS, "http://gbp.invalid/", [], builds)
+        feed = utils.build_feed(utils.FeedType.RSS, "http://gbp.invalid/", builds)
         build = builds[0]
         build = builds[0] = publisher.repo.build_records.save(
             build, note="This is a note."
         )
 
-        feed = utils.build_feed(utils.FeedType.RSS, "http://gbp.invalid/", [], builds)
+        feed = utils.build_feed(utils.FeedType.RSS, "http://gbp.invalid/", builds)
         item = feed.items[0]
 
         self.assertTrue(
@@ -85,12 +85,12 @@ class BuildFeedTests(TestCase):
         publisher = fixtures.publisher
         builds = publisher.repo.build_records.for_machine("babette")
 
-        feed = utils.build_feed(utils.FeedType.RSS, "http://gbp.invalid/", [], builds)
+        feed = utils.build_feed(utils.FeedType.RSS, "http://gbp.invalid/", builds)
         build = builds[0]
         publisher.publish(build)
         build = builds[0] = publisher.repo.build_records.get(build)
 
-        feed = utils.build_feed(utils.FeedType.RSS, "http://gbp.invalid/", [], builds)
+        feed = utils.build_feed(utils.FeedType.RSS, "http://gbp.invalid/", builds)
         item = feed.items[0]
 
         self.assertRegex(

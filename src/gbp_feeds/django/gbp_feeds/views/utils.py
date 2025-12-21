@@ -22,10 +22,10 @@ class FeedType(enum.StrEnum):
 
 
 def build_feed(
-    feed_type: FeedType, url: str, stylesheets: list[str], builds: Iterable[BuildRecord]
+    feed_type: FeedType, url: str, builds: Iterable[BuildRecord]
 ) -> fg.SyndicationFeed:
     """Return a populated Feed given the builds and feed_type"""
-    feed = create_feed(feed_type, url, stylesheets=stylesheets)
+    feed = create_feed(feed_type, url)
 
     for build in builds:
         feed.add_item(
