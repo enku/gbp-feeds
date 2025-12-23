@@ -13,34 +13,28 @@ from unittest_fixtures import Fixtures, given, params
 from . import lib
 
 
-@given(testkit.client, lib.pulled_builds)
+@given(lib.http_get, lib.pulled_builds)
 @params(feed_type=["rss", "atom"])
 class FeedTests(TestCase):
     def test(self, fixtures: Fixtures) -> None:
         feed_type = fixtures.feed_type
-        url = f"/feed.{feed_type}?foo=bar"
-        client = fixtures.client
 
-        response = client.get(url)
+        response = fixtures.http_get(f"/feed.{feed_type}?foo=bar")
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(f"application/{feed_type}+xml", response["Content-Type"])
 
     def test_machine_feed(self, fixtures: Fixtures) -> None:
         feed_type = fixtures.feed_type
-        url = f"/machines/babette/feed.{feed_type}"
-        client = fixtures.client
 
-        response = client.get(url)
+        response = fixtures.http_get(f"/machines/babette/feed.{feed_type}")
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(f"application/{feed_type}+xml", response["Content-Type"])
 
     def test_feed_content(self, fixtures: Fixtures) -> None:
-        url = "/machines/babette/feed.atom"
-        client = fixtures.client
         publisher = fixtures.publisher
-        response = client.get(url)
+        response = fixtures.http_get("/machines/babette/feed.atom")
 
         d = feedparser.parse(response.text)
 
@@ -64,10 +58,8 @@ class FeedTests(TestCase):
         self.assertEqual(expected.strip(), content.value.strip())
 
     def test_feed_content_machine(self, fixtures: Fixtures) -> None:
-        url = "/feed.atom"
-        client = fixtures.client
         publisher = fixtures.publisher
-        response = client.get(url)
+        response = fixtures.http_get("/feed.atom")
 
         d = feedparser.parse(response.text)
 
@@ -91,12 +83,10 @@ class FeedTests(TestCase):
         self.assertEqual(expected.strip(), content.value.strip())
 
 
-@given(testkit.client)
+@given(lib.http_get)
 class FeedLinkTests(TestCase):
     def test(self, fixtures: Fixtures) -> None:
-        client = fixtures.client
-
-        response = client.get("/")
+        response = fixtures.http_get("/")
 
         expected = """\
 <div class="col text-center">

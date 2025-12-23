@@ -3,10 +3,10 @@
 # pylint: disable=missing-docstring,redefined-outer-name
 
 import random
-from typing import Any, Iterable, Mapping
+from typing import Any, Callable, Iterable, Mapping, cast
 from unittest import mock
 
-from django.http import HttpRequest
+from django.http import HttpRequest, HttpResponse
 from django.template.context import Context
 from faker import Faker
 from faker.providers import BaseProvider
@@ -77,3 +77,11 @@ def context(fixtures: Fixtures, context: Mapping[str, Any] | None = None) -> Con
     context = context or {}
 
     return Context({"request": fixtures.request, **context})
+
+
+@fixture(testkit.client)
+def http_get(fixtures: Fixtures) -> Callable[[str], HttpResponse]:
+    def get(url: str) -> HttpResponse:
+        return cast(HttpResponse, fixtures.client.get(url))
+
+    return get
