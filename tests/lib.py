@@ -21,7 +21,7 @@ fake = Faker()
 
 class Provider(BaseProvider):
     def version(self) -> str:
-        return f"{random.randint(0,9)}.{random.randint(0,9)}.{random.randint(0,9)}"
+        return ".".join(str(random.randint(0, 9)) for _ in range(3))
 
     def cpv(self) -> str:
         return f"{fake.word()}-{fake.word()}/{fake.word()}-{self.version()}"
