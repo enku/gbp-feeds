@@ -36,13 +36,14 @@ class CreateFeedTests(TestCase):
         self.assertEqual([i.url for i in feed.feed["stylesheets"]], stylesheets)
 
 
+@given(builds=lambda f: f.publisher.repo.build_records.for_machine("babette"))
 @given(lib.pulled_builds)
 @params(feed_type=[utils.FeedType.ATOM, utils.FeedType.RSS])
 class BuildFeedTests(TestCase):
-    def test(self, fixtures: Fixtures) -> None:
-        builds = fixtures.publisher.repo.build_records.for_machine("babette")
+    unittest_fixtures_kwarg = "fx"
 
-        feed = utils.build_feed(utils.FeedType.RSS, "http://gbp.invalid/", builds)
+    def test(self, fx: Fixtures) -> None:
+        feed = utils.build_feed(utils.FeedType.RSS, "http://gbp.invalid/", fx.builds)
 
         self.assertEqual(3, feed.num_items())
         self.assertEqual("Gentoo Build Publisher", feed.feed["title"])
@@ -51,10 +52,8 @@ class BuildFeedTests(TestCase):
             "Latest Gentoo Build Publisher builds", feed.feed["description"]
         )
 
-    def test_item(self, fixtures: Fixtures) -> None:
-        builds = fixtures.publisher.repo.build_records.for_machine("babette")
-
-        feed = utils.build_feed(utils.FeedType.RSS, "http://gbp.invalid/", builds)
+    def test_item(self, fx: Fixtures) -> None:
+        feed = utils.build_feed(utils.FeedType.RSS, "http://gbp.invalid/", fx.builds)
         item = feed.items[0]
 
         self.assertEqual(item["title"], "GBP build: babette 2")
@@ -62,35 +61,29 @@ class BuildFeedTests(TestCase):
         self.assertEqual(item["description"], "Build babette.2 has been pulled")
         self.assertEqual(item["unique_id"], "babette.2")
         self.assertEqual(item["author_name"], "Gentoo Build Publisher")
-        self.assertEqual(item["pubdate"], builds[0].completed)
+        self.assertEqual(item["pubdate"], fx.builds[0].completed)
 
-    def test_item_note(self, fixtures: Fixtures) -> None:
-        publisher = fixtures.publisher
-        builds = publisher.repo.build_records.for_machine("babette")
-
-        feed = utils.build_feed(utils.FeedType.RSS, "http://gbp.invalid/", builds)
-        build = builds[0]
-        build = builds[0] = publisher.repo.build_records.save(
+    def test_item_note(self, fx: Fixtures) -> None:
+        feed = utils.build_feed(utils.FeedType.RSS, "http://gbp.invalid/", fx.builds)
+        build = fx.builds[0]
+        build = fx.builds[0] = fx.publisher.repo.build_records.save(
             build, note="This is a note."
         )
 
-        feed = utils.build_feed(utils.FeedType.RSS, "http://gbp.invalid/", builds)
+        feed = utils.build_feed(utils.FeedType.RSS, "http://gbp.invalid/", fx.builds)
         item = feed.items[0]
 
         self.assertTrue(
             "This is a note." in item["content"], "Build note not found in feed content"
         )
 
-    def test_item_published(self, fixtures: Fixtures) -> None:
-        publisher = fixtures.publisher
-        builds = publisher.repo.build_records.for_machine("babette")
+    def test_item_published(self, fx: Fixtures) -> None:
+        feed = utils.build_feed(utils.FeedType.RSS, "http://gbp.invalid/", fx.builds)
+        build = fx.builds[0]
+        fx.publisher.publish(build)
+        build = fx.builds[0] = fx.publisher.repo.build_records.get(build)
 
-        feed = utils.build_feed(utils.FeedType.RSS, "http://gbp.invalid/", builds)
-        build = builds[0]
-        publisher.publish(build)
-        build = builds[0] = publisher.repo.build_records.get(build)
-
-        feed = utils.build_feed(utils.FeedType.RSS, "http://gbp.invalid/", builds)
+        feed = utils.build_feed(utils.FeedType.RSS, "http://gbp.invalid/", fx.builds)
         item = feed.items[0]
 
         self.assertRegex(
