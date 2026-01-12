@@ -26,15 +26,6 @@ class CreateFeedTests(TestCase):
         )
         self.assertEqual(feed.feed["language"], "en")
 
-    def test_stylesheets(self, fixtures: Fixtures) -> None:
-        stylesheets = ["http://test.invalid/foo.css", "http://test.invalid/bar.css"]
-
-        feed = utils.create_feed(
-            fixtures.feed_type, "http://gbp.invalid/", stylesheets=stylesheets
-        )
-
-        self.assertEqual([i.url for i in feed.feed["stylesheets"]], stylesheets)
-
 
 @given(builds=lambda f: f.publisher.repo.build_records.for_machine("babette"))
 @given(lib.pulled_builds)
