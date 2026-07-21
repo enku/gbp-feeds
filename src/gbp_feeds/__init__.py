@@ -16,4 +16,5 @@ plugin = {
     "graphql": None,
     "urls": "gbp_feeds.django.gbp_feeds.views",
     "priority": -12,
+    "link": "https://github.com/enku/gbp-feeds",
 }
