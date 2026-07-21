@@ -6,7 +6,7 @@ from django import template
 from django.http import HttpRequest
 from django.template.context import Context
 from django.urls import reverse
-from django.utils.safestring import mark_safe
+from django.utils.html import format_html
 
 register = template.Library()
 
@@ -24,4 +24,4 @@ def machine_feed_link(machine: str) -> str:
     """Render the machine-specific (atom) feed link tag"""
     url = reverse("gbp-feeds-rss-machine", kwargs={"machine": machine})
 
-    return mark_safe(f'<a href="{url}"><span><i class="bi bi-rss"></i></span></a>')
+    return format_html('<a href="{}"><span><i class="bi bi-rss"></i></span></a>', url)

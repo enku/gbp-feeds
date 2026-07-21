@@ -22,3 +22,13 @@ class FullURLTests(TestCase):
         url = url_tags.full_url(fixtures.context, "gbp-machines", machine="babette")
 
         self.assertEqual("http://testserver/machines/babette/", url)
+
+
+class MachineFeedLink(TestCase):
+    def test(self) -> None:
+        link = url_tags.machine_feed_link("babette")
+
+        self.assertEqual(
+            link,
+            '<a href="/machines/babette/feed.rss"><span><i class="bi bi-rss"></i></span></a>',
+        )
